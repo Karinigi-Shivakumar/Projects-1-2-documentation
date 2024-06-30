@@ -1,0 +1,49 @@
+{
+	"id": "uuid",
+	"usecase_id": "usecase_id",
+	"project_id": "project_id",
+	"assignee_id": "resource_id",
+	"arn": "arn",
+	"token": "token",
+	"comments": [
+		{
+			"resource": {
+				"id" : "id",
+				"name" : "name",
+				"image_url" : "url"
+			},
+			"comment": "comment",
+			"created_date": " date",
+			"reply" : {
+				"resource": {
+					"id" : "id",
+					"name" : "name",
+					"image_url" : "url"
+				},
+				"comment": "comment",
+				"created_date": " date"
+			}
+		}
+	],
+	"task": {
+		"name": "task_name",
+		"stage": "stage_name",
+		"created_date": "date",
+		"start_date": "date",
+		"end_date": "date",
+		"resource_start_date": "date",
+		"resource_end_date": "date",
+		"task_assigned_date": "date",
+		"assigned_by": {
+			"id" : "id",
+			"name" : "name",
+			"image_url" : "url"
+		},
+		"updated_by": {
+			"id" : "id",
+			"name" : "name",
+			"image_url" : "url"
+		},
+		"status": ""
+	}
+}

@@ -1,0 +1,73 @@
+{
+	"id": "uuid",
+	"project_id": "project_id",
+	"workflow_id": "workflow_id",
+	"assignee_id": "resource_id",
+	"arn": "arn",
+	"usecase": {
+		"name": "usecase_name",
+		"description": " description text",
+		"start _date": "date",
+		"end_date": "date",
+		"creation_date": "date",
+		"status": "",
+		"current_stage": "stage_name",
+		"created_by": {
+			"id" : "id",
+			"name" : "name",
+			"image_url" : "url"
+		},
+		"updated_by": {
+			"id" : "id",
+			"name" : "name",
+			"image_url" : "url"
+		},
+		"stop_date" : "date",
+		"stages": [
+			{
+				"requirement": {
+					"assignee_id": "resourceId",
+					"assigned_by_id" : "resourceId", 
+					"updated_by_id": "resourceId",
+					"description": "description",
+					"start_date": "date",
+					"end_date": "date",
+					"checklists": [
+						{
+							"item_id": 1,
+							"description": "Checklist item 1",
+							"checked": false
+						},
+						{
+							"item_id": 2,
+							"description": "Checklist item 2",
+							"checked": true
+						}
+					]
+				}
+			},
+			{
+				"mock": {
+					"assignee_id": "resourceId",
+					"assigned_by_id" : "resourceId",
+					"updated_by_id": "resourceId",
+					"description": "description",
+					"start_date": "date",
+					"end_date": "date",
+					"checklists": [
+						{
+							"item_id": 1,
+							"description": "Checklist item 1",
+							"checked": false
+						},
+						{
+							"item_id": 2,
+							"description": "Checklist item 2",
+							"checked": true
+						}
+					]
+				}
+			}
+		]
+	}
+}

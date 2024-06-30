@@ -1,0 +1,25 @@
+{
+	"id": "uuid",
+	"name": "workflow_name",
+	"arn" : "arn",
+	"project_id" : "uuid",
+	"metadata": {
+		"created_by": "uuid",
+		"updated_by": "uuid",
+		"created_time": "timestamp",
+		"stages": [
+			{
+				"stage_1": {
+					"tasks": ["add to github", "add screen shot"],
+					"checklists": ["github", "screenshot"]
+				}
+			},
+			{
+				"stage_2": {
+					"tasks": ["add to github", "add screen shot"],
+					"checklists": ["github", "screenshot"]
+				}
+			}
+		]
+	}
+}

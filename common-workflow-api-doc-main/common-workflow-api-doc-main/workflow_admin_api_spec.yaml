@@ -1,0 +1,2375 @@
+openapi: 3.0.3
+info:
+    title: Workflow Management API
+    version: 1.0.0
+
+tags:
+    - name: Dashboard
+      description: APIs related to the dashboard page
+    - name: Projects
+      description: APIs related to the all projects page
+    - name: Workflow
+      description: APIs related to workflow
+    - name: Usecase
+      description: APIs related to usecase
+    - name: Task
+      description: Apis related to task
+    - name: Resource
+      description: APIs related to the Resource page
+
+paths:
+    /org_projects_overview:
+        get:
+            tags:
+                - Dashboard
+            summary: organisation projects details overview
+            operationId: getOrgProjectDetails
+            responses:
+                "200":
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    totalProjects:
+                                        type: integer
+                                    total_tasks:
+                                        type: integer
+                                    percentage_completed:
+                                        type: integer
+                                    completed:
+                                        type: integer
+                                    in_progress:
+                                        type: number
+                                        format: float
+                                    unassigned:
+                                        type: integer
+                "500":
+                    description: "Internal Server Error"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+
+    /projects_usecase_overview:
+        get:
+            tags:
+                - Dashboard
+            summary: Get the number of completed and incomplete use cases of a project between dates
+            operationId: getProjectsUsecaseOverview
+            parameters:
+                - in: query
+                  name: project_id
+                  required: false
+                  schema:
+                      type: integer
+                      format: uuid
+                  description: ID of the project for which to get the overview
+                - in: query
+                  name: from_date
+                  required: false
+                  schema:
+                      type: string
+                      format: date
+                  description: Start date of the date range
+                - in: query
+                  name: to_date
+                  required: false
+                  schema:
+                      type: string
+                      format: date
+                  description: End date of the date range
+            responses:
+                "200":
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    completed_usecases:
+                                        type: integer
+                                        description: Total number of completed use cases
+                                    incomplete_usecases:
+                                        type: integer
+                                        description: Total number of incomplete use cases
+                "500":
+                    description: "Internal Server Error"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+
+    /resources_task_status:
+        get:
+            tags:
+                - Dashboard
+            summary: Get the number of completed, inprogress and pending tasks of a resource in between dates
+            operationId: getResourcesTasksStatus
+            parameters:
+                - in: query
+                  name: project_id
+                  required: false
+                  schema:
+                      type: string
+                      format: uuid
+                  description: project id 
+                - in: query
+                  name: resource_id
+                  required: false
+                  schema:
+                      type: string
+                      format: uuid
+                  description: resource id
+                - in: query
+                  name: from_date
+                  required: false
+                  schema:
+                      type: string
+                      format: date
+                  description: Start date
+                - in: query
+                  name: to_date
+                  required: false
+                  schema:
+                      type: string
+                      format: date
+                  description: End date
+            responses:
+                "200":
+                    description: Ok
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        resource_id:
+                                            type: integer
+                                            format: uuid
+                                        resource_name:
+                                            type: string
+                                        completed_tasks:
+                                            type: integer
+                                        inprogress_tasks:
+                                            type: integer
+                                        pending_tasks:
+                                            type: integer
+
+                "500":
+                    description: "Internal Server Error"
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+
+    /projects_overview:
+        get:
+            tags:
+                - Dashboard
+            summary: Get the overview of projects
+            operationId: getProjectsOverview
+            parameters:
+                - in: query
+                  name: status
+                  schema:
+                      type: string
+                  description: Filter projects by status (optional)
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        project_id:
+                                            type: integer
+                                            format: uuid
+                                        project_name:
+                                            type: string
+                                        status:
+                                            type: string
+                                        total_usecases:
+                                            type: integer
+                                        due_date:
+                                            type: string
+                                            format: date
+                                        completed_tasks_percentage:
+                                            type: number
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /projects_resource_overview:
+        get:
+            tags:
+                - Dashboard
+            summary: Get the overview of project manager for a project
+            operationId: getProjectResourceOverview
+            parameters:
+                - in: query
+                  name: project_status
+                  schema:
+                      type: string
+                  description: Filter projects by status (optional)
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        project_id:
+                                            type: integer
+                                            format: uuid
+                                        project_name:
+                                            type: string
+                                        manager_id:
+                                            type: string
+                                            format: uuid
+                                        manager_name:
+                                            type: integer
+                                        manager_image_url:
+                                            type: string
+                                        current_task:
+                                            type: integer
+                                        created_date:
+                                            type: string
+                                            format: date
+                                        due_date:
+                                            type: string
+                                            format: date
+                                        total_tasks:
+                                            type: number
+                                        project_resources:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    resource_id:
+                                                        type: string
+                                                        format: uuid
+                                                    resource_name:
+                                                        type: string
+                                                    resource_img_url:
+                                                        type: string
+
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+
+    /project/{id}:
+        get:
+            tags:
+                - Projects
+            summary: Get a project overview
+            operationId: getProject
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Id of the project
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            example:
+                                id: "project_id_value"
+                                name: "project_name_value"
+                                last_updated:
+                                    updated_by_id: "uuid"
+                                    updated_by_name: "name"
+                                    updated_time: "2024-01-19T12:34:56Z"
+                                description: "project_description_value"
+                                workflows:
+                                    - id: "workflow_id_1"
+                                      name: "workflow_name_1"
+                                      total_usecases: 10
+                                      task_completed: 50.0
+                                    - id: "workflow_id_2"
+                                      name: "workflow_name_2"
+                                      total_usecases: 8
+                                      task_completed: 75.0
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        # put:
+        #     tags:
+        #         - Projects
+        #     summary: Update a project
+        #     operationId: updateProject
+        #     parameters:
+        #         - in: path
+        #           name: id
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: Id of the project
+        #     requestBody:
+        #         required: true
+        #         content:
+        #             application/json:
+        #                 schema:
+        #                     type: object
+        #                     properties:
+        #                         project_name:
+        #                             type: string
+        #                         project_description:
+        #                             type: string
+        #                         # Add other properties you want to update
+        #     responses:
+        #         "200":
+        #             description: Successful response
+        #             content:
+        #                 application/json:
+        #                     example:
+        #                         project_id: "project_id_value"
+        #                         project_name: "updated_project_name"
+        #                         # Include other updated properties
+        #                         last_updated:
+        #                             updated_by_id: "uuid"
+        #                             updated_by_name: "name"
+        #                             updated_time: "2024-01-19T12:34:56Z"
+        #                         project_description: "updated_project_description"
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: An internal server error occurred
+        # delete:
+        #     tags:
+        #         - Projects
+        #     summary: Delete a project
+        #     operationId: deleteProject
+        #     parameters:
+        #         - in: path
+        #           name: id
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: Id of the project
+        #     responses:
+        #         "204":
+        #             description: Project successfully deleted
+        #         "404":
+        #             description: Project not found
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: Project not found
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: An internal server error occurred
+
+    /project:
+        get:
+            tags:
+                - Projects
+            summary: Get a list of projects and its details
+            operationId: getProjects
+            parameters:
+                - in: query
+                  name: status
+                  required: false
+                  schema:
+                      type: string
+                  description: Status of the project (optional)
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        id:
+                                            type: string
+                                            format: uuid
+                                        name:
+                                            type: string
+                                        icon_url:
+                                            type: string
+                                        total_usecases:
+                                            type: integer
+                                        total_resources:
+                                            type: integer
+                                        status:
+                                            type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        post:
+            tags:
+                - Projects
+            summary: Add a new project
+            operationId: addProject
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                name:
+                                    type: string
+                                description:
+                                    type: string
+                                department:
+                                    type: string
+                                start_date:
+                                    type: string
+                                    format: date-time
+                                end_date:
+                                    type: string
+                                    format: date-time 
+                                image_url:
+                                    type: string
+            responses:
+                "201":
+                    description: New project created
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    project_id:
+                                        type: string
+                                        format: uuid
+                                    project_name:
+                                        type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /project/{id}/team:
+        get:
+            tags:
+                - Projects
+            summary: Gets the team for a project
+            operationId: getProjectTeam
+            parameters:
+                - in: path
+                  name: id
+                  schema:
+                      type: string
+                      format: uuid
+                  required : true
+            responses:
+                "201":
+                    description: OK
+                    content:
+                        application/json:
+                            example:
+                              - backend:
+                                  - resource_id: "8f68647c-5249-4748-8464-d0daa2f55e2c"
+                                    resource_name: "Mia Lopez"
+                                    image_url: "https://cdn.pixabay.com/photo/2018/11/08/23/52/man-3803551_640.jpg"
+                                    email: "mia.lopez@example.com"
+                                  - resource_id: "5aa51a3f-b8f6-4576-a105-598edc57ff2e"
+                                    resource_name: "Nathan Brown"
+                                    image_url: "https://cdn.pixabay.com/photo/2016/09/24/03/20/man-1690965_640.jpg"
+                                    email: "nathan.brown@example.com"
+                              - frontend:
+                                  - resource_id: "3373514c-6590-4d0f-89cf-c4e17751a1ff"
+                                    resource_name: "Kelly Adams"
+                                    image_url: "https://cdn.pixabay.com/photo/2016/11/18/19/07/happy-1836445_1280.jpg"
+                                    email: "kelly.adams@example.com"
+                                  - resource_id: "30ae6a64-5197-4aa4-bd0a-0bf986741a74"
+                                    resource_name: "Olivia Martin"
+                                    image_url: "https://cdn.pixabay.com/photo/2015/08/05/04/02/people-875597_640.jpg"
+                                    email: "olivia.martin@example.com"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        put:
+            tags:
+                - Projects
+            summary: Add a new team to a  project
+            operationId: addTeamToProject
+            parameters:
+                - in: path
+                  name: id
+                  schema:
+                      type: string
+                      format: uuid
+                  required : true
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                          team_name: "Team Name"
+                          created_by_id: "550e8400-e29b-41d4-a716-446655440001"
+                          roles:
+                            - backend: ["8f68647c-5249-4748-8464-d0daa2f55e2c", "5aa51a3f-b8f6-4576-a105-598edc57ff2e"]
+                            - frontend: ["3373514c-6590-4d0f-89cf-c4e17751a1ff", "30ae6a64-5197-4aa4-bd0a-0bf986741a74"]
+            responses:
+                "201":
+                    description: New team added to the project
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /project/{id}/workflow:
+        get:
+            tags:
+                - Projects
+            summary: Get all workflows for a project
+            operationId: getProjectWorkflows
+            parameters:
+                - name: id
+                  in: path
+                  required: true
+                  description: ID of the project to get stage details
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            example:
+                              - workflow_id: "78514e7f-c367-4718-9549-443b1a719fe7"
+                                workflow_name: "The-latest-workflow-by-team"
+                                total_usecases: 1
+                                task_completed: 0
+                                completed_usecases: 1
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /workflow/{id}:
+        get:
+            tags:
+                - Workflow
+            summary: get workflow by id
+            operationId: getWorkflow
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the workflow
+            responses:
+                "201":
+                    description: New workflow added to the project
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    workflow_name:
+                                        type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        put:
+            tags:
+                - Workflow
+            summary: updates a workflow
+            operationId: updateWorkflow
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the workflow
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                            name: "string"
+                            created_by_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                            project_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                            stages:
+                              - Requirements1:
+                                  tasks:
+                                    - "task-1"
+                                    - "task-2"
+                                    - "task-3"
+                                  checklist:
+                                    - "thing 1"
+                                    - "thing 2"
+                                    - "thing 3"
+                              - mock1:
+                                  tasks:
+                                    - "mytask-1"
+                                    - "task-2"
+                                    - "task-3"
+                                  checklist:
+                                    - "thing 1"
+                                    - "thing 2"
+                                    - "thing 3"
+            responses:
+                "200":
+                    description: workflow updated successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    stages:
+                                        type: array
+                                        items:
+                                            type: object
+                                            additionalProperties:
+                                                type: object
+                                                properties:
+                                                    tasks:
+                                                        type: array
+                                                        items:
+                                                            type: string
+                                                    checklists:
+                                                        type: array
+                                                        items:
+                                                            type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        delete:
+            tags:
+                - Workflow
+            summary: teminates a workflow
+            operationId: deleteWorkflow
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the workflow
+            responses:
+                "204":
+                    description: Workflow successfully terminated
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /workflow:
+        get:
+            tags:
+                - Workflow
+            summary: Get all workflows
+            operationId: getAllWorkflows
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            example:
+                              - id: "be9c621f-8a63-4748-9143-4801fdbc9cea"
+                                name: "The-latest-workflow-by-team"
+                                stages:
+                                  - Requirements1:
+                                      tasks:
+                                        - "task-1"
+                                        - "task-2"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 2"
+                                        - "thing 3"
+                                  - mock1:
+                                      tasks:
+                                        - "mytask-1"
+                                        - "task-2"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 2"
+                                        - "thing 3"
+                              - id: "383ccc12-6819-4ac1-a008-482e57b59452"
+                                name: "The-latest-workflow-by-team"
+                                stages:
+                                  - Requirements1:
+                                      tasks:
+                                        - "task-1"
+                                        - "task-2"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 2"
+                                        - "thing 3"
+                                  - mock1:
+                                      tasks:
+                                        - "mytask-1"
+                                        - "task-2"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 2"
+                                        - "thing 3"
+                              - id: "0a31aeb5-4a2d-4889-8b65-d6c425cd7f0f"
+                                name: "Testing-workflow-for-api"
+                                stages:
+                                  - Requirements1:
+                                      tasks:
+                                        - "task-1"
+                                        - "task-2"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 2"
+                                        - "thing 3"
+                                  - mock1:
+                                      tasks:
+                                        - "mytask-1"
+                                        - "task-2"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 2"
+                                        - "thing 3"
+                              - id: "78514e7f-c367-4718-9549-443b1a719fe7"
+                                name: "The-latest-workflow-by-team"
+                                stages:
+                                  - Requirements:
+                                      tasks:
+                                        - "task-1"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 3"
+                                  - mock:
+                                      tasks:
+                                        - "mytask-1"
+                                        - "task-2"
+                                        - "task-3"
+                                      checklist:
+                                        - "thing 1"
+                                        - "thing 2"
+                                        - "thing 3"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        post:
+            tags:
+                - Workflow
+            summary: Add a new workflow to a  project
+            operationId: addWorkflow
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                            name: "string"
+                            created_by_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                            project_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                            stages:
+                              - name: Requirements1
+                                tasks: 
+                                  - task-1
+                                  - task-2
+                                  - task-3
+                                checklist:
+                                  - thing 1
+                                  - thing 2
+                                  - thing 3
+                              - name: mock
+                                tasks: 
+                                  - task-1
+                                  - task-2
+                                  - task-3
+                                checklist:
+                                  - thing 1
+                                  - thing 2
+                                  - thing 3
+            responses:
+                "201":
+                    description: New workflow added to the project
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    workflow_name:
+                                        type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+
+    /usecase/{id}:
+        get:
+            tags:
+                - Usecase
+            summary: get usecase by id
+            operationId: getUsecase
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            responses:
+                "201":
+                    description: New workflow added to the project
+                    content:
+                        application/json:
+                            example:
+                                assignee_id: "resource_id"
+                                assignee_name: "name"
+                                role: "role"
+                                image: "image_url"
+                                current_task: "task_name"
+                                total_task: 10
+                                usecase:
+                                    name: "usecase_name"
+                                    description: "description text"
+                                    start_date: "date"
+                                    end_date: "date"
+                                    creation_date: "date"
+                                    status: ""
+                                    current_stage: "stage_name"
+                                    stages:
+                                        - requirement:
+                                              status: "completed"      
+                                              end_date: ""
+                                              checklists:
+                                                  - item_id: 1
+                                                    description: "Checklist item 1"
+                                                    checked: false
+                                                  - item_id: 2
+                                                    description: "Checklist item 2"
+                                                    checked: true
+                                              start_date: ""
+                                              assignee_id: ""
+                                              description: ""
+                                              updated_by_id: ""
+                                              assigned_by_id: ""      
+                                        - mock:
+                                              status: "completed"
+                                              end_date: ""
+                                              checklists:
+                                                  - item_id: 1
+                                                    description: "Checklist item 1"
+                                                    checked: false
+                                                  - item_id: 2
+                                                    description: "Checklist item 2"
+                                                    checked: true
+                                              start_date: ""
+                                              assignee_id: ""
+                                              description: ""
+                                              updated_by_id: ""
+                                              assigned_by_id: ""      
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        put:
+            tags:
+                - Usecase
+            summary: updates a usecase
+            operationId: updateUsecase
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                            name: "string"
+                            updated_by_id: "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+                            stages:
+                              - Requirements1:
+                                  tasks:
+                                    - "task-1"
+                                    - "task-2"
+                                    - "task-3"
+                                  checklist:
+                                    - "thing 1"
+                                    - "thing 2"
+                                    - "thing 3"
+                              - mock1:
+                                  tasks:
+                                    - "mytask-1"
+                                    - "task-2"
+                                    - "task-3"
+                                  checklist:
+                                    - "thing 1"
+                                    - "thing 2"
+                                    - "thing 3"
+            responses:
+                "200":
+                    description: usecase updated successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    stages:
+                                        type: array
+                                        items:
+                                            type: object
+                                            additionalProperties:
+                                                type: object
+                                                properties:
+                                                    tasks:
+                                                        type: array
+                                                        items:
+                                                            type: string
+                                                    checklists:
+                                                        type: array
+                                                        items:
+                                                            type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        delete:
+            tags:
+                - Usecase
+            summary: deletes a usecase
+            operationId: deleteUsecase
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            responses:
+                "204":
+                    description: usecase successfully deleted
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+
+    /usecase/{id}/assignStage:
+        put:
+            tags: 
+                - Usecase
+            summary: assign stage in usecase
+            operationId: assignStage
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                                stage_name: Requirement
+                                assigned_to_id: "c5a6e94e-9f8a-431c-99f3-3529a1845d71"
+                                description: ""
+            responses:
+                "200":
+                    description: Stage assigned successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                  message: 
+                                    type: string
+                                    description: Confirmation message
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+
+    /usecase/{id}/task:
+        get:
+            tags:
+                - Usecase
+            summary: get usecase task by id
+            operationId: getUsecaseTask
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            responses:
+                "200":
+                    description: get task and docs details from the usecase
+                    content:
+                        application/json:
+                            example:
+                                name: "a73883d0e7c7@UseCase7March2024" 
+                                stages:
+                                    - RequiredStage:
+                                        end_date: ""
+                                        checklist:
+                                            - checked: false
+                                              item_id: 1
+                                              description: "RequiredChecklist"
+                                            - checked: false
+                                              item_id: 2
+                                              description: "RequiredChecklist2"
+                                        start_date: ""
+                                        assignee_id: "96ce25f9-0329-4138-8949-8b3c42acab4c"
+                                        description: ""
+                                        updated_by_id: ""
+                                        assigned_by_id: ""
+                                        tasks: 
+                                            - id: "9f21ffa1-cd6e-4216-942a-89518f2d2e1c"
+                                              name: "RequiredSubStage2"
+                                              status: "inprogress"
+                                              stage: "RequiredStage"
+                                              assigned_to:
+                                                id: "96ce25f9-0329-4138-8949-8b3c42acab4c"
+                                                image: ""
+                                                name: "Asif aslam"
+                                                designation: "Project Manager"
+                                              docs:
+                                                  - doc_name: "pdf7.file"
+                                                    doc_id: "e59a5a87-250c-47a5-a6c7-ea25769c2510"
+                                                    doc_url: "https:/pdf7"
+                                                    created_time: "2024-03-12T22:30:00"
+                                            - id: "3ac7eee7-d162-43ea-97c1-cdacae8196e3"
+                                              name: "RequiredSubStage"
+                                              status: "inprogress"
+                                              stage: "RequiredStage"
+                                              assigned_to:
+                                                id: "96ce25f9-0329-4138-8949-8b3c42acab4c"
+                                                image: ""
+                                                name: "Asif aslam"
+                                                designation: "Project Manager"
+                                              docs:
+                                                  - doc_name: "Vedio.file"
+                                                    doc_id: "1f44c85c-78d8-47bb-9f13-e89669cc9a2d"
+                                                    doc_url: "https:/Vedio"
+                                                    created_time: "2024-03-12T09:30:00"
+                                    - MockTestingStage:
+                                        end_date: ""
+                                        checklist:
+                                            - checked: false
+                                              item_id: 1
+                                              description: "MockTestingChecklisrStage"
+                                            - checked: false
+                                              item_id: 2
+                                              description: "MockTestingChecklisrStage2"
+                                        start_date: ""
+                                        assignee_id: "96ce25f9-0329-4138-8949-8b3c42acab4c"
+                                        description: ""
+                                        updated_by_id: ""
+                                        assigned_by_id: ""
+                                        tasks: 
+                                            - id: "9f21ffa1-cd6e-4216-942a-89518f2d2e1c"
+                                              name: "MockTestingsubStage3"
+                                              status: "inprogress"
+                                              stage: "MockTestingStage"
+                                              assigned_to:
+                                                id: "96ce25f9-0329-4138-8949-8b3c42acab4c"
+                                                image: ""
+                                                name: "Asif aslam"
+                                                designation: "Project Manager"
+                                              docs:
+                                                  - doc_name: "pdf7.file"
+                                                    doc_id: "e59a5a87-250c-47a5-a6c7-ea25769c2510"
+                                                    doc_url: "https:/pdf7"
+                                                    created_time: "2024-03-12T22:30:00"
+                                            - id: "3ac7eee7-d162-43ea-97c1-cdacae8196e3"
+                                              name: "MockTestingsubStage3"
+                                              status: "inprogress"
+                                              stage: "MockTestingStage"
+                                              assigned_to:
+                                                id: "96ce25f9-0329-4138-8949-8b3c42acab4c"
+                                                image: ""
+                                                name: "Asif aslam"
+                                                designation: "Project Manager"
+                                              docs:
+                                                  - doc_name: "Vedio.file"
+                                                    doc_id: "1f44c85c-78d8-47bb-9f13-e89669cc9a2d"
+                                                    doc_url: "https:/Vedio"
+                                                    created_time: "2024-03-12T09:30:00"
+                                status: "inprogress"
+                                end_date: "2024-03-13"
+                                start_date: "2024-03-11"
+                                description: "testing"
+                                created_by_id: "5b5e750a-3244-402d-b7cb-50f035badf51"
+                                creation_date: "2024-03-07T05:46:38.492Z"
+                                current_stage: "RequiredStage"
+                                assigned_to_id: "96ce25f9-0329-4138-8949-8b3c42acab4c"
+                                usecase_assignee_id: ""    
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred                
+
+    /usecase/{id}/form:
+        get:
+            tags:
+                - Usecase
+            summary: get usecase form by id
+            operationId: getUsecaseForm
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            responses:
+                "201":
+                    description: New workflow added to the project
+                    content:
+                        application/json:
+                            example:
+                              - mock1:
+                                  - id: "7f00f35e-c223-4e98-b741-4afed36594b7"
+                                    docName: "designImage"
+                                    Url: "formkiq_url"
+                                  - id: "ec5e7579-9167-4c58-aaf5-47a192f5ad10"
+                                    docName: "api specs"
+                                    Url: "git.file"
+                              - Requirements1:
+                                  - id: "4a0622a9-7224-4730-bd49-a491be0daa8c"
+                                    docName: "awsfile"
+                                    Url: "aws_url"
+                                  - id: "342f7699-1212-4fd2-8669-441df2efe3fd"
+                                    docName: "design.html"
+                                    Url: "design_url"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /usecase/{id}/asset:
+        get:
+            tags:
+                - Usecase
+            summary: get usecase assets by id
+            operationId: getUsecaseAsset
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            responses:
+                "201":
+                    description: New workflow added to the project
+                    content:
+                        application/json:
+                            example:
+                                id: "uuid"
+                                assignee_id: "resource_id"
+                                assignee_name: "name"
+                                role: "role"
+                                image: "image_url"
+                                current_task: "task_name"
+                                total_task: 10
+                                usecase:
+                                    name: "usecase_name"
+                                    description: "description text"
+                                    start_date: "date"
+                                    end_date: "date"
+                                    creation_date: "date"
+                                    status: ""
+                                    current_stage: "stage_name"
+                                    stages:
+                                        - requirement:
+                                              tasks:
+                                                  - id: "uuid"
+                                                    name: "task_name"
+                                                    stage: "stage_name"
+                                                    created_date: "date"
+                                                    start_date: "date"
+                                                    end_date: "date"
+                                                    resource_start_date: "date"
+                                                    resource_end_date: "date"
+                                                    task_assigned_date: "date"
+                                                    status: ""
+                                              checklists:
+                                                  - item_id: 1
+                                                    description: "Checklist item 1"
+                                                    checked: false
+                                                  - item_id: 2
+                                                    description: "Checklist item 2"
+                                                    checked: true
+                                        - mock:
+                                              tasks:
+                                                  - id: "uuid"
+                                                    name: "task_name"
+                                                    stage: "stage_name"
+                                                    created_date: "date"
+                                                    start_date: "date"
+                                                    end_date: "date"
+                                                    resource_start_date: "date"
+                                                    resource_end_date: "date"
+                                                    task_assigned_date: "date"
+                                                    status: ""
+                                              checklists:
+                                                  - item_id: 1
+                                                    description: "Checklist item 1"
+                                                    checked: false
+                                                  - item_id: 2
+                                                    description: "Checklist item 2"
+                                                    checked: true
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /usecase/{id}/planning:
+        get:
+            tags:
+                - Usecase
+            summary: get usecase plannnig by id
+            operationId: getUsecasePlanning
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the usecase
+            responses:
+                "201":
+                    description: New workflow added to the project
+                    content:
+                        application/json:
+                            example:
+                              - funcky:
+                                  task:
+                                    - id: "a1ce8762-5b54-4f63-af7d-95b8eb8e1576"
+                                      name: "zootopia"
+                                      assignee_to: 
+                                        id: "75e713d1-afa7-4d01-a3ad-3406d91dac83"
+                                        name: "shfd3h srhf2ah"
+                                        designation: "Project Manager"
+                                        image: ""
+                                      start_date: ""
+                                      end_date: ""
+                                      resource_start_date: ""
+                                      resource_end_date: ""
+                                      start_deviation: 0
+                                      end_deviation: 0
+                              - elephits:
+                                  task:
+                                    - id: "a3eacbcd-60fe-4e6a-a2ee-34a81d637e33"
+                                      name: "zod"
+                                      assignee_to: 
+                                        id: "75e713d1-afa7-4d01-a3ad-3406d91dac83"
+                                        name: "John Doe"
+                                        designation: "Project Manager"
+                                        image: ""
+                                      start_date: ""
+                                      end_date: ""
+                                      resource_start_date: ""
+                                      resource_end_date: ""
+                                      start_deviation: 0
+                                      end_deviation: 0
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /usecase:
+        get:
+            tags:
+                - Usecase
+            summary: Get all usecases
+            operationId: getUsecases
+            parameters:
+                - name: project_id
+                  in: query
+                  required: true
+                  description: ID of the project
+                  schema:
+                      type: string
+                      format: uuid
+                - name: workflow_id
+                  in: query
+                  required: true
+                  description: ID of the project
+                  schema:
+                      type: string
+                      format: uuid
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            example:
+                              stages:
+                                - Requirements1
+                                - mock1
+                              usecases:
+                                - usecase_id: "409ef3df-9c01-4f00-a702-9b302ae37c7d"
+                                  usecase_name: "procuremenworkflowusecase-1"
+                                  current_stage: ""
+                                  assignee_id: ""
+                                  assignee_name: ""
+                                  total_resources: 0
+                                  start_date: "2024-02-02T09:45:37.344Z"
+                                  end_date: "2024-02-02T09:45:37.344Z"
+                                - usecase_id: "bddb4eee-7190-41b4-9227-52649907b8a0"
+                                  usecase_name: "procurementworkflowusecase-1"
+                                  current_stage: ""
+                                  assignee_id: ""
+                                  assignee_name: ""
+                                  total_resources: 0
+                                  start_date: "2024-02-02T09:45:37.344Z"
+                                  end_date: "2024-02-02T09:45:37.344Z"
+                                - usecase_id: "f92f6b45-77bd-48d5-8429-ba7ec8957003"
+                                  usecase_name: "mdddy-1"
+                                  current_stage: ""
+                                  assignee_id: ""
+                                  assignee_name: ""
+                                  total_resources: 0
+                                  start_date: "2024-02-02T09:45:37.344Z"
+                                  end_date: "2024-02-02T09:45:37.344Z"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        post:
+            tags:
+                - Usecase
+            summary: Add a new usecase to a  project
+            operationId: addusecase
+            requestBody:
+                description: Usecase details
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            properties:
+                                project_id:
+                                    type: string
+                                    format: uuid
+                                created_by_id:
+                                    type: string
+                                    format: uuid
+                                usecase_name:
+                                    type: string
+                                assigned_to_id:
+                                    type: string
+                                    format: uuid
+                                description:
+                                    type: string
+                                workflow_id:
+                                    type: string
+                                    format: uuid
+                                start_date:
+                                    type: string
+                                    format: uuid
+                                end_date:
+                                    type: string
+                                    format: uuid                                    
+            responses:
+                "201":
+                    description: Usecase created successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    usecase_id:
+                                        type: string
+                                        format: uuid
+                                    project_id:
+                                        type: string
+                                        format: uuid
+                                    created_by_id:
+                                        type: string
+                                        format: uuid
+                                    usecase_name:
+                                        type: string
+                                    assigned_to_id:
+                                        type: string
+                                        format: uuid
+                                    description:
+                                        type: string
+                "400":
+                    description: Bad Request
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: Invalid request payload
+
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /usecase/{id}/checklist:
+        put:
+            tags:
+                - Usecase
+            summary: update checklist in usecase
+            operationId: updateChecklist
+            parameters:
+                - in: path   
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Id of the usecase 
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                                stage_name: Requirement
+                                item_id: 1
+                                checked: true
+            responses:
+                "200":  
+                    description: checklist update successfully
+                    content:
+                        application/json:
+                            example:
+                                checked: true
+                                item_id: 1
+                                description: testing1
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred                
+
+
+    # /task/{id}:
+        # get:
+        #     tags:
+        #         - Task
+        #     summary: Get task details
+        #     operationId: getTask
+        #     parameters:
+        #         - in: path
+        #           name: id
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: Id of the task
+        #     responses:
+        #         "200":
+        #             description: Successful response
+        #             content:
+        #                 application/json:
+        #                     example:
+        #                         task_id: "task_id_value"
+        #                         task_name: "task_name_value"
+        #                         task_description: "task_description_value"
+        #                         status: "completed"
+        #                         # Include other task properties
+        #         "404":
+        #             description: Task not found
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: Task not found
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: An internal server error occurred
+        # put:
+        #     tags:
+        #         - Task
+        #     summary: update a task
+        #     operationId: updateTask
+        #     parameters:
+        #         - in: path
+        #           name: id
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: id of the project
+        #     responses:
+        #         "200":
+        #             description: Successful response
+        #             content:
+        #                 application/json:
+        #                     example: "Task completed successfully"
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: An internal server error occurred
+        # delete:
+        #     tags:
+        #         - Task
+        #     summary: Delete a task
+        #     operationId: deleteTask
+        #     parameters:
+        #         - in: path
+        #           name: id
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: Id of the task
+        #     responses:
+        #         "204":
+        #             description: Task successfully deleted
+        #         "404":
+        #             description: Task not found
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: Task not found
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: An internal server error occurred
+    /task/{taskId}/docs:
+        # get:
+        #     tags:
+        #         - Task
+        #     summary: get meta docs for a task
+        #     operationId: getTaskDocs
+        #     parameters:
+        #         - in: path
+        #           name: taskId
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: id of the task
+        #     responses:
+        #         "200":
+        #             description: Successful response
+        #             content:
+        #                 application/json:
+        #                   example:
+        #                     - doc_name: "Usecase doc 1"
+        #                       doc_id: "123456"
+        #                       resource_id: "789012"
+        #                       resource_name: "John Doe"
+        #                       email: "john.doe@example.com"
+        #                       image: "https://example.com/image1.jpg"
+        #                       created_time: "2024-02-05T12:00:00Z"
+        #                       doc_url: "https://example.com/document/123456"
+        #                     - doc_name: "Usecase doc 2"
+        #                       doc_id: "789012"
+        #                       resource_id: "345678"
+        #                       resource_name: "Jane Doe"
+        #                       email: "jane.doe@example.com"
+        #                       image: "https://example.com/image2.jpg"
+        #                       created_time: "2024-02-06T12:30:00Z"
+        #                       doc_url: "https://example.com/document/789012"
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     example:
+        #                         message: "Internal server error"
+        #                         error : "error stack"
+        post:
+            tags:
+                - Task
+            summary: upload a meta doc 
+            operationId: uploadMetaDoc
+            parameters:
+                - in: path
+                  name: taskId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the task
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                            example:
+                                created_by_id: "3373514c-6590-4d0f-89cf-c4e17751a1ff"
+                                doc_name: "usecase document"
+                                doc_url: "formkiq.docs/docId.pdf"
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            example: 
+                              message: "Documented uploaded successfully"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            example:
+                                message: "Internal server error"
+                                error : "error stack"
+    /task/{taskId}/docs/{docId}:
+        # get:
+        #     tags:
+        #         - Task
+        #     summary: Get meta doc details
+        #     operationId: getMetaDoc
+        #     parameters:
+        #         - in: path
+        #           name: taskId
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: Id
+        #         - in: path
+        #           name: docId
+        #           required: true
+        #           schema:
+        #               type: string
+        #               format: uuid
+        #           description: Id 
+        #     responses:
+        #         "200":
+        #             description: Successful response
+        #             content:
+        #                 application/json:
+        #                     example:
+        #                         task_id: "task_id_value"
+        #                         task_name: "task_name_value"
+        #                         task_description: "task_description_value"
+        #                         status: "completed"
+        #                         # Include other task properties
+        #         "404":
+        #             description: Task not found
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: Task not found
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: An internal server error occurred
+        delete:
+            tags:
+                - Task
+            summary: Delete a meta doc
+            operationId: deleteMetaDoc
+            parameters:
+                - in: path
+                  name: taskId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Id
+                - in: path
+                  name: docId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Id 
+            responses:
+                "204":
+                    description: document successfully deleted
+                "404":
+                    description: Task not found
+                    content:
+                        application/json:
+                            example: "Documented not found"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            example: "Internal server error"
+    /task/{id}/assign/{resourceId}:
+        put:
+            tags:
+                - Task
+            summary: assign a task to a resource
+            operationId: assignTask
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the project
+                - in: path
+                  name: resourceId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the resource
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            example: "Task completed successfully"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /task/{id}/complete:
+        put:
+            tags:
+                - Task
+            summary: complete a task
+            operationId: completeTask
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the project
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            example: "Task completed successfully"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /task/{taskId}/comment:
+        put:
+            tags:
+                - Task
+            summary: add comment to a task
+            operationId: addComment
+            parameters:
+                - in: path
+                  name: taskId
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: id of the task
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                          id: "3373514c-6590-4d0f-89cf-c4e17751a1ff"
+                          comment: "This is a comment"
+            responses:
+                "200":
+                    description: Comment added successfully
+                    content:
+                        application/json:
+                            example: "comment added"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+
+    /task/{taskId}/reply:
+        put:
+            tags: 
+                - Task
+            summary: Add reply to a task's comment
+            operationId: addReply
+            parameters:
+                - in: path
+                  name: taskId
+                  required: true
+                  schema: 
+                    type: string
+                  description: ID of the task
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        example:
+                          resource_id: "3373514c-6590-4d0f-89cf-c4e17751a1ff"
+                          comment: "This is a reply."
+                          commentIndex: 0
+            responses:
+                "200":
+                    description: Reply added successfully
+                    content:
+                        application/json:
+                            example: "updated reply success"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred                                    
+    # /task:
+        # get:
+        #         tags:
+        #             - Task
+        #         summary: get all tasks for a usecase
+        #         operationId: getAllTasks
+        #         parameters:
+        #             - in: query
+        #               name: id
+        #               required: true
+        #               schema:
+        #                   type: string
+        #                   format: uuid
+        #               description: id of the usecase
+        #         responses:
+        #             "201":
+        #                 description: Task created successfully
+        #                 content:
+        #                     application/json:
+        #                         example:
+        #                             task_id: "newly_created_task_id"
+        #             "500":
+        #                 description: Internal Server Error
+        #                 content:
+        #                     application/json:
+        #                         schema:
+        #                             type: object
+        #                             properties:
+        #                                 message:
+        #                                     type: string
+        #                                     description: An internal server error occurred
+        # post:
+        #     tags:
+        #         - Task
+        #     summary: Create a new task
+        #     operationId: createTask
+        #     requestBody:
+        #         required: true
+        #         content:
+        #             application/json:
+        #                 schema:
+        #                     type: object
+        #                     properties:
+        #                         task_name:
+        #                             type: string
+        #                         task_description:
+        #                             type: string
+        #                         # Include other task properties
+        #     responses:
+        #         "201":
+        #             description: Task created successfully
+        #             content:
+        #                 application/json:
+        #                     example:
+        #                         task_id: "newly_created_task_id"
+        #         "500":
+        #             description: Internal Server Error
+        #             content:
+        #                 application/json:
+        #                     schema:
+        #                         type: object
+        #                         properties:
+        #                             message:
+        #                                 type: string
+        #                                 description: An internal server error occurred
+    /resource:
+        get:
+            tags:
+                - Resource
+            summary: Get a list of resources
+            operationId: getResources
+            parameters:
+                - in: query
+                  name: project_id
+                  required: false
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Id of a project (optional)
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        resource_id:
+                                            type: string
+                                            format: uuid
+                                        resource_name:
+                                            type: string
+                                        role:
+                                            type: string
+                                        resource_img_url:
+                                            type: string
+                                        resource_email:
+                                            type: string
+                                        projects:
+                                            type: array
+                                            items:
+                                                type: object
+                                                properties:
+                                                    project_id:
+                                                        type: string
+                                                        format: uuid project
+                                                    project_name:
+                                                        type: string
+                                                    project_img_url:
+                                                        type: string
+
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+        post:
+            tags:
+                - Resource
+            summary: Add a new resource
+            operationId: addResource
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                            example:
+                                resource_name: "John doe"
+                                email: "john.doe@example.com"
+                                role: "Complete developer"
+                                project: "Workflow"
+                                description: "This is a sample description"
+            responses:
+                "201":
+                    description: New resource created
+                    content:
+                        application/json:
+                            example:
+                                message: "New resource created successfully"
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            example:
+                                message: "Internal server error"
+                                error : "error stack"
+
+    # /resources/list:
+    #     get:
+    #         tags:
+    #             - Resource
+    #         summary: Get a list of resources (list view)
+    #         operationId: getResourcesListView
+    #         parameters:
+    #             - in: query
+    #               name: project_id
+    #               required: false
+    #               schema:
+    #                   type: string
+    #                   format: uuid
+    #               description: Id of a project (optional)
+    #         responses:
+    #             "200":
+    #                 description: Successful response
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             type: array
+    #                             items:
+    #                                 type: object
+    #                                 properties:
+    #                                     resource_id:
+    #                                         type: string
+    #                                         format: uuid
+    #                                     resource_name:
+    #                                         type: string
+    #                                     total_tasks:
+    #                                         type: integer
+    #                                     total_projects:
+    #                                         type: integer
+    #                                     role:
+    #                                         type: string
+    #                                     resource_img_url:
+    #                                         type: string
+    #                                     resource_email:
+    #                                         type: string
+    #                                     projects:
+    #                                         type: array
+    #                                         items:
+    #                                             type: object
+    #                                             properties:
+    #                                                 project_id:
+    #                                                     type: string
+    #                                                     format: uuid
+    #                                                 project_name:
+    #                                                     type: string
+    #                                                 project_img_url:
+    #                                                     type: string
+
+    #             "500":
+    #                 description: Internal Server Error
+    #                 content:
+    #                     application/json:
+    #                         schema:
+    #                             type: object
+    #                             properties:
+    #                                 message:
+    #                                     type: string
+    #                                     description: An internal server error occurred
+
+    /get_resource_by_name:
+        get:
+            tags:
+                - Resource
+            summary: Get resources by name
+            operationId: getResourcesByName
+            parameters:
+                - in: query
+                  name: name
+                  required: true
+                  schema:
+                      type: string
+                      format: uuid
+                  description: Name of the resource to search for
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        resource_id:
+                                            type: integer
+                                            format: uuid
+                                        name:
+                                            type: string
+                                        image_url:
+                                            type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred
+    /get_resource_by_role:
+        get:
+            tags:
+                - Resource
+            summary: Get resources by role
+            operationId: getResourcesByRole
+            parameters:
+                - in: query
+                  name: name
+                  required: false
+                  schema:
+                      type: string
+                  description: name of the resource
+                - in: query
+                  name: role
+                  required: true
+                  schema:
+                      type: string
+                  description: role of the resource to search for
+            responses:
+                "200":
+                    description: Successful response
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    type: object
+                                    properties:
+                                        resource_id:
+                                            type: integer
+                                            format: uuid
+                                        name:
+                                            type: string
+                                        image_url:
+                                            type: string
+                                        email:
+                                            type: string
+                "500":
+                    description: Internal Server Error
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        description: An internal server error occurred

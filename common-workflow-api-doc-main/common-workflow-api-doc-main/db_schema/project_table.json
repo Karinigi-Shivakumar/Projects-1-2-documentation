@@ -1,0 +1,39 @@
+{
+	"id": "uuid",
+	"project": {
+		"name": "projectName",
+		"status": "completed",
+		"manager": {
+			"id" : "id",
+			"name" : "name",
+			"image_url" : "url"
+		},
+		"description": " description",
+		"department": "department name",
+		"icon_url": "url",
+		"current_stage": "",
+		"start_date": "12-12-2024",
+		"end_date": "12-12-2024",
+		"updated_by": {
+			"id" : "id",
+			"name" : "name",
+			"image_url" : "url",
+			"time" : "time_stamp"
+		},
+		"workflows": [
+			{ "id": "workflow_id", "name": "workflwow_name" },
+			{ "id": "workflow_id", "name": "workflow_name" },
+			{ "id": "workflow_id", "name": "workflow_name" }
+		],
+		"team": {
+			"team_name": "team_name",
+			"created_by_id": "resource_id",
+			"created_time": "timestamp",
+			"roles": [
+				{ "role_name": ["id", "id"] },
+				{ "role_name": ["id", "id"] },
+				{ "role_name": ["id", "id"] }
+			]
+		}
+	}
+}

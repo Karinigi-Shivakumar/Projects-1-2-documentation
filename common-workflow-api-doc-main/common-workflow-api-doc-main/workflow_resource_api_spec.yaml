@@ -1,0 +1,89 @@
+openapi: 3.0.3 
+info:
+  title: Workflow Management API
+  version: 1.0.0
+
+tags: 
+  - name: Tasks
+    description: APIs related to the Tasks page 
+
+paths:
+  /task/details:
+    get:
+      tags: 
+        - Tasks
+      summary: get the list view of tasks assigned to a resource
+      operationId: getTaskDetails
+      parameters:
+        - name: resource_id
+          in: query
+          required: true
+          description: ID of the resource to get resource task list details
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              example:
+                - task_id: "1"
+                  task_name: "Task 1"
+                  project_id: "101"
+                  project_name: "Project A"
+                  assigned_by_id: "user1"
+                  assigned_by_name: "John Doe"
+                  task_assigned_date: "2023-12-06T12:34:56Z"
+                - task_id: "2"
+                  task_name: "Task 2"
+                  project_id: "102"
+                  project_name: "Project B"
+                  assigned_by_id: "user2"
+                  assigned_by_name: "Jane Smith"
+                  task_assigned_date: "2023-12-07T09:45:00Z"
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+  /task/{task_id}/start:
+    put:
+      tags: 
+        - Tasks
+      summary: Starts a task assigned to a resource
+      operationId: startTask
+      parameters:
+        - name: task_id
+          in: path
+          required: true
+          description: Id of the task
+          schema:
+            type: string
+        - name: resource_id
+          in: query
+          required: true
+          description: Id of the resource
+          schema:
+            type: string
+      responses:
+        '201':
+          description: Task started successfully
+          content:
+            application/json:
+              example:
+                message: Task started
+        '500':
+          description: "Internal Server Error"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred

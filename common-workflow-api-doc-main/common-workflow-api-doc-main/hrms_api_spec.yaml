@@ -1,0 +1,1514 @@
+openapi: 3.0.3
+info:
+  title: HRMS Management API
+  version: 1.0.0
+tags:
+  - name: auth
+    description: APIs related to the auth page
+  - name: Dashboard
+    description: APIs related to the dashboard page
+  - name: Department
+    description: APIs related to department
+  - name: Employee Type
+    description: APIs related to employee type
+  - name: Employee
+    description: APIs related to the employee page
+  - name: Organization
+    description: APIs related to the Organization page
+  - name: Designation
+    description: APIs related to the empDesignation
+  - name: Upload
+    description: APIs related to uploading documents    
+paths:
+  /signin:
+    post:
+      tags:
+        - auth
+      summary: Sign in to the system
+      operationId: signin
+      requestBody:
+        required: true      
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful sign-in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Result:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                      email:
+                        type: string
+                        format: email
+                      work_email:
+                        type: string
+                        format: email
+                      first_name:
+                        type: string
+                      last_name:
+                        type: string
+                      gender:
+                        type: string
+                      dob:
+                        type: string
+                      number:
+                        type: string
+                      emergency_number:
+                        type: string
+                      highest_qualification:
+                        type: string
+                      emp_detail_id:
+                        type: string
+                      description:
+                        type: string
+                      current_task_id:
+                        type: string
+                      invitation_status:
+                        type: string
+                      org_id:
+                        type: string
+                      image:
+                        type: string
+                      email_verified:
+                        type: string
+                  AccessToken:
+                    type: string
+                  RefreshToken:
+                    type: string
+
+        '400':
+          description: Bad request, validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Details of the validation errors
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+  /signup:
+    post:
+      tags:
+        - auth
+      summary: Sign up for a new account
+      operationId: signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+      responses:
+        '200':
+          description: Successful sign-up
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message for successful sign-up
+        '400':
+          description: Bad request, validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Details of the validation errors
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error  
+                    
+  /forgotPassword:
+    post:
+      tags:
+        - auth
+      summary: Initiate password reset
+      operationId: forgotPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+      responses:
+        '200':
+          description: Password reset code sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message for successful initiation of password reset
+        '400':
+          description: Bad request, validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Details of the validation errors
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error   
+                    
+  /resetPassword:
+    post:
+      tags:
+        - auth
+      summary: Reset user password using confirmation code
+      operationId: resetPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: User's email address
+                otp:
+                  type: string
+                  description: One-time password received for confirmation
+                newPassword:
+                  type: string
+                  description: New password for the user
+      responses:
+        '200':
+          description: Password confirmed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Confirmation message for successful password reset
+        '400':
+          description: Bad request, validation failed
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Details of the validation errors
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+                    
+  /newUserPassword:
+    post:
+      tags:
+        - auth
+      summary: Reset password for a new user
+      operationId: newUserPassword
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email of the user
+                password:
+                  type: string
+                  description: The current password of the user
+                newpassword:
+                  type: string
+                  description: The new password to be set for the user
+      responses:
+        '301':
+          description: Password reset successful
+          headers:
+            Location:
+              schema:
+                type: string
+                description: Redirect URL after successful password reset
+          content:
+            application/json:
+              example:
+                message: Password reset successfully
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Invalid request body
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+                  
+  /refreshToken:
+    put:
+      tags:
+        - auth
+      summary: Refresh access token
+      operationId: refreshToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: The email of the user
+                refreshToken:
+                  type: string
+                  description: The refresh token to be used for token refresh
+      responses:
+        '200':
+          description: Access token refreshed successfully
+          content:
+            application/json:
+              example:
+                Access_token: <new_access_token>
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+                
+                    
+  /dashboard/dashboardStats:
+    get:
+      tags:
+        - Dashboard
+      summary: Retrieve total employees and projects count
+      operationId: getEmployee
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              example:
+                Totalemployees: 18
+                Totalprojects: 5
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+  /department:
+    get:
+      tags:
+        - Department
+      summary: Retrieve all departments
+      operationId: listDepartment
+      responses:
+        '200':
+          description: Successful response with a list of departments.
+          content:
+            application/json:
+              example:
+                - id: 1
+                  name: Finance
+                  org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+                - id: 2
+                  name: Sales
+                  org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the cause of the internal server error.
+    post:
+      tags:
+        - Department
+      summary: Add a new department
+      operationId: addDepartment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: Human Resources
+              org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+      responses:
+        '201':
+          description: Department added successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                name: Human Resources
+                org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+    put:
+      tags:
+        - Department
+      summary: Update a department
+      operationId: updateDepartment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: Research and Development
+              id: 1
+      responses:
+        '200':
+          description: Department updated successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                name: Research and Development
+                org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+  /empType:
+    get:
+      tags:
+        - Employee Type
+      summary: Retrieve all employee types
+      operationId: listEmpType
+      responses:
+        '200':
+          description: Successful response with a list of employee types
+          content:
+            application/json:
+              example:
+                - id: 1
+                  type: Permanent
+                  org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+                - id: 2
+                  type: Consultant
+                  org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+    post:
+      tags:
+        - Employee Type
+      summary: Add a new employee type
+      operationId: addEmpType
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              type: Full-Time
+              org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+      responses:
+        '201':
+          description: Employee type added successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                type: Full-Time
+                org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+    put:
+      tags:
+        - Employee Type
+      summary: Update an employee type
+      operationId: updateEmpType
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              type: Part-Time
+              id: 1
+      responses:
+        '200':
+          description: Employee type updated successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                type: Part-Time
+                org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+  /employee/document:
+    put:
+      tags:
+        - Employee
+      summary: Add document for an employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              emp_id: 4e585c37-66ab-47a4-9985-2161e125a61c
+              documents:
+                - name: adhar
+                  url: https://example.com/image.jpg
+                - name: newdoc
+                  url: https://example.com/image.jpg
+      responses:
+        '200':
+          description: Successful addition of document(s)
+          content:
+            application/json:
+              example:
+                - id: 11
+                  name: adhar
+                  url: https://example.com/image.jpg
+                  created_at: '2024-02-22T22:50:05.778Z'
+                - id: 12
+                  name: newdoc
+                  url: https://example.com/image.jpg
+                  created_at: '2024-02-22T22:50:05.778Z'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+  /employee/equipmentInfo:
+    put:
+      tags:
+        - Employee
+      summary: Add equipment details for an employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              owner: false
+              device_type_id: 1
+              manufacturer: acer
+              serial_number: acerer12erre3re*&%237742
+              note: acer lpy
+              supply_date: '2024-02-22T12:00:00Z'
+              emp_id: 4e585c37-66ab-47a4-9985-2161e125a61c
+      responses:
+        '200':
+          description: Successful addition of equipment details
+          content:
+            application/json:
+              example:
+                id: 1
+                owner: false
+                device_type_id: 1
+                manufacturer: acer
+                serial_number: acerer12erre3re*&%237742
+                note: acer lpy
+                supply_date: '2024-02-22T12:00:00Z'
+                created_at: '2024-02-22T03:56:25.629Z'
+                updated_at: '2024-02-22T03:56:25.629Z'
+                created_by: 7a015bd2-58d0-4a48-8849-e2dadb70c8fb
+                updated_by: 98a0321c-a2ea-4d22-b7cf-6a459d6a8bc0
+                emp_id: 4e585c37-66ab-47a4-9985-2161e125a61c
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+  /employee/professionalInfo:
+    put:
+      tags:
+        - Employee
+      summary: Update professional information of an employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              designation_id: 4
+              pf: '12345'
+              uan: '54321'
+              department_id: 5
+              reporting_manager_id: 61a6b732-1597-444a-afcc-10eeafbacc63
+              work_location: Hyderabad
+              start_date: '2024-02-22T12:00:00Z'
+              emp_id: 61a6b732-1597-444a-afcc-10eeafbacc63
+      responses:
+        '200':
+          description: Successful update of professional information
+          content:
+            application/json:
+              example:
+                designation_id: 4
+                pf: '12345'
+                uan: '54321'
+                department_id: 5
+                reporting_manager_id: 61a6b732-1597-444a-afcc-10eeafbacc63
+                emp_type_id: 1
+                work_location: Hyderabad
+                start_date: '2024-02-21T18:30:00.000Z'
+                employee_id: 8e619b80-51f5-4fd5-b8f4-fa9571ebc224
+                designation: SRE
+                department: Sales
+                manager_id: 61a6b732-1597-444a-afcc-10eeafbacc63
+                manager_first_name: Shah
+                manager_last_name: Shah
+                image: https://example.com/image.jpg
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+  /employee/personalInfo:
+    post:
+      tags:
+        - Employee
+      summary: Add personal information of an employee
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              first_name: namename
+              last_name: lastname
+              email: johdddr@example.com
+              work_email: joh@woddfrk.example.com
+              gender: Male
+              dob: '1990-01-01'
+              number: '1890'
+              emergency_number: '9876210'
+              highest_qualification: Bachelor's Degree
+              image: https://example.com/image1.jpg
+              address_line_1: 123 Main St
+              address_line_2: Apt 101
+              landmark: Near the park
+              country: USA
+              state: California
+              city: San Francisco
+              zipcode: '1233445'
+              emp_type: 1
+      responses:
+        '200':
+          description: Successful addition of personal information
+          content:
+            application/json:
+              example:
+                id: 7a015bd2-58d0-4a48-8849-e2dadb70c8fb
+                email: johdddr@example.com
+                work_email: joh@woddfrk.example.com
+                first_name: namename
+                last_name: lastname
+                gender: Male
+                dob: '1990-01-01'
+                number: '1890'
+                emergency_number: '9876210'
+                highest_qualification: Bachelor's Degree
+                description: ''
+                created_at: '2024-02-22T05:57:18.141Z'
+                updated_at: '2024-02-22T05:57:18.141Z'
+                created_by: 7a015bd2-58d0-4a48-8849-e2dadb70c8fb
+                updated_by: 98a0321c-a2ea-4d22-b7cf-6a459d6a8bc0
+                image: https://example.com/image1.jpg
+                email_verified: ''
+                address_line_1: 123 Main St
+                address_line_2: Apt 101
+                landmark: Near the park
+                country: USA
+                state: California
+                city: San Francisco
+                zipcode: '1233445'
+                pf: '12345'
+                uan: '54321'
+                department_id: 1
+                emp_type_id: 1
+                work_location: Hyderabad
+                start_date: '2024-02-21T18:30:00.000Z'
+                emp_type_name: Permanent
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+  /employee:
+    get:
+      tags:
+        - Employee
+      summary: getEmployees
+      description: Retrieves a list of employees based on provided search parameters.
+      parameters:
+        - name: page
+          in: query
+          description: The page number for pagination.
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response. Returns a list of employees.
+          content:
+            application/json:
+              example:
+                totalPages: 5
+                currentPage: 1
+                employees:
+                  - employee_name: abduallah mohd
+                    employee_id: d8616f28-a018-4802-8b9d-817a20a06a1b
+                    email_address: abduallahsynectiks@gmail.com
+                    designation: DevOps Engineer
+                    employee_type: Full-Time
+                    department: Enginner
+                  - employee_name: akash pimplay
+                    employee_id: 13a7d5ff-64c2-4a6f-87da-82e5fb78ce8f
+                    email_address: pimplay@gmail.com
+                    designation: UI/Ux Designer
+                    employee_type: Consultant
+                    department: Finance
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message describing the error.
+  /searchByName:
+    get:
+      tags:
+        - Employee
+      summary: searchByName
+      description: Retrieves a list of employees based on provided search parameters.
+      parameters:
+        - name: name
+          in: query
+          description: The name of the employee to retrieve.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response. Returns a list of employees.
+          content:
+            application/json:
+              example:
+                employee_name: Jane Smith
+                employee_id: 795bb19c-d470-4147-a53e-bc65fbae54db
+                email_address: jane.smith@work.com
+                designation: UI/Ux Designer
+                employee_type: Consultant
+                department: Finance
+                start_date: '2024-02-21T18:30:00.000Z'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: A message describing the error.
+  /employee/{id}:
+    get:
+      summary: Retrieve employee information by ID
+      operationId: getEmployeeById
+      tags:
+        - Employee
+      parameters:
+        - name: id
+          in: path
+          description: The ID of the employee to retrieve
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful response with employee information
+          content:
+            application/json:
+              example:
+                personal_information:
+                  emp_id: 4e585c37-66ab-47a4-9985-2161e125a61c
+                  email: johntest@example.com
+                  image: https://example.com/image1.jpg
+                  work_email: john.tsttt@work.example.com
+                  first_name: testt
+                  last_name: testtt
+                  gender: Male
+                  dob: '1989-12-31T18:30:00.000Z'
+                  number: '1234564557890'
+                  emergency_number: '98765434545210'
+                  highest_qualification: Bachelor's Degree
+                  address_line_1: 123 Main St
+                  address_line_2: Apt 101
+                  landmark: Near the park
+                  country: USA
+                  state: California
+                  city: San Francisco
+                  zipcode: '12345'
+                organization_details:
+                  org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+                  org_name: Gandhe
+                  org_logo: ""
+                  org_address_line_1: 123 Main St
+                  org_address_line_2: Apt 101
+                  org_contact: 1890
+                  org_country: USA
+                  org_city: San Francisco
+                  org_state: California
+                  org_Zipcode: 1233445  
+                professional_information:
+                  emp_detail_id: null
+                  designation_id: 2
+                  pf: XYZ15666256
+                  uan: ABC9867777654
+                  department_id: 2
+                  reporting_manager_id: 960abb87-2007-4c2c-96b1-80420a35a970
+                  emp_type_id: 1
+                  work_location: Some location
+                  start_date: '2024-02-21T18:30:00.000Z'
+                  department_name: Finace
+                  emp_type: Permanent
+                  emp_designation_id: 2
+                  emp_designation: Front-End Developer
+                  reporting_manager_first_name: John
+                  reporting_manager_last_name: Doe
+                documents:
+                  - document_id: 9
+                    name: adhar
+                    url: https://example.com/image.jpg
+                  - document_id: 10
+                    name: newdoc
+                    url: https://example.com/image.jpg
+                equipment:
+                  - owner: false
+                    device_type_id: 1
+                    manufacturer: acer
+                    serial_number: acer123*&%237742
+                    note: acer lpy
+                    supply_date: '2024-02-21T18:30:00.000Z'
+                    device_type_name: Laptop
+                  - owner: false
+                    device_type_id: 2
+                    manufacturer: acer
+                    serial_number: acerer12erre3re*&%237742
+                    note: acer lpy
+                    supply_date: '2024-02-21T18:30:00.000Z'
+                    device_type_name: Laptop
+        '400':
+          description: Bad request, invalid employee ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Details of the validation errors
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+                    
+    put:
+      tags:
+        - Employee
+      summary: Update personal information of an employee
+      operationId: updatePersonalInfo
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+            format: uuid
+          description: The ID of the employee to update
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              first_name: "John"
+              last_name: "Doe"
+              email: "John@matrix.com"
+              work_email: "John_work_email@matrix.com"
+              gender: "Male"
+              dob: "1990-01-01"
+              number: "1234567890"
+              emergency_number: "9876543210"
+              highest_qualification: "Master's Degree"
+              address_line_1: "456 Updated St"
+              address_line_2: "Suite 202"
+              landmark: "Near the river"
+              country: "USA"
+              state: "California"
+              city: "Los Angeles"
+              zipcode: "90001"
+              image: "https://example.com/updated_image.jpg"
+      responses:
+        '200':
+          description: Personal information updated successfully
+          content:
+            application/json:
+              example:  
+                first_name: "John"
+                last_name: "Doe"
+                email: "John@matrix.com"
+                work_email: "John_work_email@matrix.com"
+                gender: "Male"
+                dob: "1990-01-01"
+                number: "1234567890"
+                emergency_number: "9876543210"
+                highest_qualification: "Master's Degree"
+                address_line_1: "456 Updated St"
+                address_line_2: "Suite 202"
+                landmark: "Near the river"
+                country: "USA"
+                state: "California"
+                city: "Los Angeles"
+                zipcode: "90001"
+                image: "https://example.com/updated_image.jpg"
+                id: "960abb87-2007-4c2c-96b1-80420a35a970"
+        '400':
+          description: Bad request, invalid request body format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    description: Details of the validation errors
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Details of the error
+    delete:
+      tags:
+        - Employee
+      operationId: deleteEmployee
+      summary: Delete an employee record
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the employee to be deleted
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Successful deletion of the employee
+          content:
+            application/json:
+              example:
+                message: resource deleted successfully
+        '404':
+          description: Employee not found or no content available to delete
+          content:
+            application/json:
+              example:
+                message: content not available
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error        
+      
+    
+  /employee/tracker:
+    get:
+      tags:
+        - Employee
+      operationId: employeeTracker
+      summary: get track the employee details
+      parameters:
+        - name: page
+          in: query
+          description: The page number for pagination.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successful response. Returns  employees details.
+          content:
+            application/json:
+              example:
+                totalPages: 11
+                currentPage: 1
+                employees:
+                  - employee_name: abduallah mohd
+                    email: abduallahsynectiks@gmail.com
+                    employee_status: DRAFT
+                    designation: DevOps Engineer
+                    employee_type: Full-Time
+                    image: ""
+                  - employee_name: akash pimplay
+                    email: akash@gmail.com
+                    employee_status: DRAFT
+                    designation: AWS Engineer
+                    employee_type: Part-Time
+                    image: ""
+        
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+                    
+  /invite/{id}:                  
+    get:
+      tags: 
+        - Employee
+      summary: Invite a user
+      operationId: inviteUser
+      parameters:
+        - in: path
+          name: id
+          required: true
+          description: The ID of the employee to be invited
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: User invitation initiated
+          content:
+            application/json:
+              example:
+                message: user invited successfully  
+        '500':
+           description: Internal Server Error
+           content:
+             application/json:
+               schema:
+                 type: object
+                 properties:
+                   message:
+                     type: string
+                     description: An internal server error occurred
+                   error:
+                     type: string
+                     description: Details of the internal server error        
+                
+  /schedule:
+    post:
+      tags:
+        - Employee
+      summary: Schedule user invitation 
+      operationId: scheduleInvite
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: The timestamp to schedule the invitation
+                id:
+                  type: string
+                  format: uuid
+                  description: The ID of the employee to be invited
+      responses:
+        '200':
+          description: User invitation scheduled successfully
+          content:
+            application/json:
+              example:
+                message: user invited scheduled successfully at <timestamp>
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Invalid request body
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error            
+      
+  /deleteinvite:
+    delete:
+      tags:
+        - Employee
+      summary: Delete invitation for an employee
+      operationId: deleteInvite
+      parameters:
+        - in: query
+          name: id
+          required: true
+          description: The ID of the employee whose invitation is to be deleted
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Invitation deleted successfully
+          content:
+            application/json:
+              example:
+                message: user invite deleted successfully.
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Invalid request parameter
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+    
+  /updateschedule:
+    post:
+      tags:
+        - Employee
+      summary: Update invitation schedule for an employee
+      operationId: updateInviteSchedule
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                  format: uuid
+                  description: The ID of the employee
+                timestamp:
+                  type: string
+                  format: date-time
+                  description: The new timestamp to schedule the invitation
+      responses:
+        '200':
+          description: Invitation schedule updated successfully
+          content:
+            application/json:
+              example:
+                message: user invite updated to be scheduled at <timestamp>
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              example:
+                message: Invalid request body
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                  error:
+                    type: string
+                    description: Details of the internal server error
+  
+      
+  /organization:
+    put:
+      tags:
+        - Organization
+      summary: Update organization details
+      operationId: updateOrganization
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              name: ABC Company
+              email: info@abccompany.com
+              number: '+1234567890'
+              logo: https://example.com/logo.png
+              address_line_1: 123 Main Street
+              address_line_2: Suite 101
+              landmark: Near Airport
+              country: USA
+              state: New York
+              city: New York City
+              zipcode: '100001'
+              orgId: 482d8374-fca3-43ff-a638-02c8a425c492
+      responses:
+        '200':
+          description: Organization details updated successfully
+          content:
+            application/json:
+              example:
+                id: 482d8374-fca3-43ff-a638-02c8a425c492
+                name: ABC Company
+                email: info@abccompany.com
+                number: '+1234567890'
+                logo: https://example.com/logo.png
+                address_line_1: 123 Main Street
+                address_line_2: Suite 101
+                landmark: Near Airport
+                country: USA
+                state: New York
+                city: New York City
+                zipcode: '100001'
+        '400':
+          description: Bad request, invalid request body format
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: object
+                    description: Details of the validation errors
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: Details of the error
+  /designation:
+    get:
+      tags:
+        - Designation
+      summary: Retrieve all designations
+      operationId: listDesignation
+      responses:
+        '200':
+          description: Successful response with a list of designation.
+          content:
+            application/json:
+              example:
+                - id: 1
+                  designation: UI/UX Developer
+                  org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+                - id: 2
+                  designation: Front-End Developer
+                  org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message indicating the cause of the internal server error.
+
+    post:
+       tags:
+         - Designation
+       summary: Add a new designation
+       operationId: addDesignation
+       requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              designation: UI/UX Developer
+              org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+       responses:
+        '201':
+          description: Designation added successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                designation: UI/UX Developer
+                org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred
+                    
+    put:
+      tags:
+        - Designation
+      summary: Update a designation
+      operationId: updateDesignation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            example:
+              designation: UI/UX Developer
+              id: 1
+      responses:
+        '200':
+          description: Designation updated successfully
+          content:
+            application/json:
+              example:
+                id: 1
+                name: UI/UX Developer
+                org_id: 482d8374-fca3-43ff-a638-02c8a425c492
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    description: An internal server error occurred    
+
+  /docUpload:
+    post:
+      tags:
+        - Upload
+      summary: Upload a document, photo, vedio etc
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            example:
+                  amar: hrms_api_spects_yaml
+                  
+      responses:
+        '200':
+          description: Document uploaded successfully
+          content:
+            application/json:
+              example:
+                    fileUrl: "https://workflow-lambda-dev-serverlessdeploymentbucket-ygpfd8ufe19x.s3.amazonaws.com/workflow_DMS/file_1708932071705"
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Details of the error
+                  details:
+                    type: string
+                    description: Details of the error message
+                  
